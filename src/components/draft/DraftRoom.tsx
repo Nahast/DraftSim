@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { DataStatusLoader } from "@/components/DataStatus";
 import { useDraft } from "@/lib/useDraft";
 import { PlayerList } from "./PlayerList";
 import { PlayerSheet } from "./PlayerSheet";
@@ -45,7 +46,7 @@ export function DraftRoom({ id }: { id: string }) {
           )}
           <RosterPanel mine={mine} rules={rules} />
           <RecentPicks picks={d.state.picks} players={byId} myPosition={draft.myPosition} />
-          <p className="mx-4 mt-4 text-xs text-muted">ADP from Fantasy Football Calculator.</p>
+          <DataStatusLoader />
         </div>
         <PlayerList available={available} onOpen={setOpenId} />
       </div>
