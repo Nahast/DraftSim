@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ground: #eef4f2;
+  --ground-2: #e2ebe8;
+  --ink: #0b1f2a;
+  --muted: #43596a;
+  --teal: #14b8c6;
+  --tote: #0a0f14;
+  --amber: #ffb400;
+  --red: #b42318;
+  --rule: #b3c6c1;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ground: var(--ground);
+  --color-ground-2: var(--ground-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-teal: var(--teal);
+  --color-tote: var(--tote);
+  --color-amber: var(--amber);
+  --color-danger: var(--red);
+  --color-rule: var(--rule);
+  --font-sans: var(--font-public-sans), system-ui, sans-serif;
+  --font-display: var(--font-barlow), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { background: var(--ground-2); }
+body { background: var(--ground); color: var(--ink); font-size: 15px; line-height: 1.4; }
+::selection { background: var(--teal); color: var(--ink); }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 5px var(--ground); }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.05; text-transform: uppercase; text-wrap: balance; }
+
+/* primary action: teal is reserved for this and for your own pick */
+.btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; padding: 0 16px; border-radius: 4px; background: var(--teal); color: var(--ink); font-weight: 700; font-size: 17px; text-decoration: none; }
+.btn:hover:not(:disabled) { background: #33c9d6; }
+.btn:disabled { background: var(--ground-2); border: 1px solid var(--rule); color: var(--muted); }
+.btn-alt { background: none; border: 1px solid var(--ink); }
+.btn-alt:hover:not(:disabled) { background: var(--ground-2); }
+
+/* small control: steppers, toggles */
+.tbtn { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 12px; border: 1px solid var(--ink); border-radius: 2px; font-family: var(--font-display); font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; }
+.tbtn:hover:not(:disabled) { background: var(--ground-2); }
+
+/* choice row in the setup wizard */
+.opt { display: block; width: 100%; min-height: 64px; padding: 10px 12px; text-align: left; border: 1px solid var(--ink); border-radius: 2px; margin-top: 8px; }
+.opt:hover { background: var(--ground-2); }
+.opt[aria-checked="true"] { background: var(--ink); color: #fff; }
+.opt[aria-checked="true"] small { color: #cfe3e8; }
+.opt b { display: block; font-family: var(--font-display); font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
+.opt small { display: block; font-size: 13px; color: var(--muted); }
