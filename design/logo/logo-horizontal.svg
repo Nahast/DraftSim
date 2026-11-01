@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 64" fill="none" stroke-width="6" stroke-linejoin="round">
+<defs>
+<mask id="a" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><rect width="64" height="64" fill="#fff"/><path d="M38 18H64" stroke="#000" stroke-width="11"/></mask>
+<mask id="b" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><rect width="64" height="64" fill="#fff"/><rect x="12.5" y="38" width="11" height="22" fill="#000" stroke="none"/></mask>
+</defs>
+<path d="M61 18H34A7 7 0 0 0 34 32A7 7 0 0 1 34 46H3" stroke="#14B8C6" mask="url(#b)"/>
+<path d="M18 7H28A25 25 0 0 1 28 57H18Z" stroke="currentColor" mask="url(#a)"/>
+<path d="M61 18H41" stroke="#14B8C6"/>
+<g stroke="currentColor" stroke-width="5">
+<path d="M83 20.5H92A12.5 12.5 0 0 1 92 45.5H83Z"/>
+<path d="M114.5 48V38A8 8 0 0 1 122.5 30.5H127"/>
+<path d="M147.5 38A7.5 7.5 0 1 1 132.5 38A7.5 7.5 0 1 1 147.5 38M147.5 28V48"/>
+<path d="M161.5 48V26A6.5 6.5 0 0 1 168 19.5H172M156 30.5H168"/>
+<path d="M183.5 20V40A5.5 5.5 0 0 0 189 45.5H192M178 30.5H190"/>
+<path d="M221.5 28V48M232.5 48V37.5A7 7 0 0 1 246.5 37.5V48M246.5 37.5A7 7 0 0 1 260.5 37.5V48"/>
+</g>
+<g stroke="#14B8C6" stroke-width="5">
+<path d="M212 20.5H206A6.25 6.25 0 0 0 206 33A6.25 6.25 0 0 1 206 45.5H199"/>
+<path d="M221.5 16V22"/>
+</g>
+</svg>
