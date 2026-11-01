@@ -38,10 +38,18 @@ export function DataStatus({ sources, now = new Date() }: { sources: SourceStatu
 }
 
 export function DataStatusLoader() {
-  const { data } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["status"],
-    queryFn: async () => (await fetch("/api/status")).json() as Promise<{ sources: SourceStatus[] }>,
+    queryFn: async () => {
+      const res = await fetch("/api/status");
+      if (!res.ok) throw new Error(`status HTTP ${res.status}`);
+      return (await res.json()) as { sources: SourceStatus[] };
+    },
     staleTime: 5 * 60_000,
   });
+  // Never go silent: if freshness cannot be checked, say so.
+  if (isError) {
+    return <p role="alert" className="mx-4 mt-3 border border-ink px-2 py-1 text-sm">Data status unavailable. Recommendations may be out of date.</p>;
+  }
   return data ? <DataStatus sources={data.sources} /> : null;
 }

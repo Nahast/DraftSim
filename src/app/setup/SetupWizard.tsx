@@ -19,6 +19,16 @@ const APPS = [
   { id: "idk", label: "I don't know", note: "We'll use standard rules" },
 ] as const;
 
+const SCORING = [
+  { id: "std", label: "Standard" },
+  { id: "half", label: "Half PPR" },
+  { id: "ppr", label: "PPR" },
+] as const;
+const ORDER = [
+  { id: true, label: "Snake" },
+  { id: false, label: "Linear" },
+] as const;
+
 type Experience = (typeof EXPERIENCE)[number]["id"];
 type App = (typeof APPS)[number]["id"];
 
@@ -39,6 +49,8 @@ export function SetupWizard() {
   const [app, setApp] = useState<App | null>(null);
   const [teams, setTeams] = useState(12);
   const [slot, setSlot] = useState<number | null>(null); // null until they choose: we guess the middle
+  const [scoring, setScoring] = useState<(typeof SCORING)[number]["id"]>("ppr");
+  const [snake, setSnake] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -57,7 +69,8 @@ export function SetupWizard() {
           app: app === "idk" ? "other" : app,
           teams,
           myPosition: mySlot,
-          scoring: "ppr",
+          scoring,
+          snake,
         }),
       });
       if (!res.ok) throw new Error(res.status === 429 ? "Too many drafts just now. Try again in a minute." : "Could not create your draft.");
@@ -109,12 +122,31 @@ export function SetupWizard() {
       {step === 3 && (
         <section>
           <h1>Quick setup</h1>
-          <p className="mt-2">We use standard rules (PPR scoring, snake draft). Two questions:</p>
+          <p className="mt-2">We start with the most common rules (PPR scoring, snake draft). Two questions:</p>
           <p className="mt-5 font-semibold">How many teams?</p>
           <Stepper label="teams" value={teams} min={2} max={20} onChange={setTeams} />
           <p className="mt-5 font-semibold">What pick number are you?</p>
           <Stepper label="pick number" value={mySlot} min={1} max={teams} onChange={setSlot} />
           <p className="mt-2 text-sm text-muted">If you don&apos;t know yet, we&apos;ll guess the middle. You can change it later.</p>
+          <details className="mt-6 border-t border-rule pt-3" open={exp === "pro"}>
+            <summary className="min-h-11 cursor-pointer py-2 font-semibold">Change the rules</summary>
+            <p className="mt-1 text-sm text-muted">Match what your league uses. Not sure? Leave these as they are.</p>
+            <p className="mt-3 font-semibold">Scoring</p>
+            <div className="seg mt-1" role="radiogroup" aria-label="Scoring">
+              {SCORING.map((o) => (
+                <button key={o.id} type="button" role="radio" aria-checked={scoring === o.id}
+                  className={scoring === o.id ? "bg-ink text-white" : ""} onClick={() => setScoring(o.id)}>{o.label}</button>
+              ))}
+            </div>
+            <p className="mt-3 font-semibold">Draft order</p>
+            <div className="seg mt-1" role="radiogroup" aria-label="Draft order">
+              {ORDER.map((o) => (
+                <button key={o.label} type="button" role="radio" aria-checked={snake === o.id}
+                  className={snake === o.id ? "bg-ink text-white" : ""} onClick={() => setSnake(o.id)}>{o.label}</button>
+              ))}
+            </div>
+            <p className="mt-2 text-sm text-muted">Snake means the order reverses every round. Linear repeats the same order.</p>
+          </details>
           {error && <p role="alert" className="mt-4 text-danger">{error}</p>}
         </section>
       )}

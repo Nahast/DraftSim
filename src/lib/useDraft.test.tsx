@@ -12,6 +12,7 @@ let serverPicks: { overall: number; team: number; playerId: string; source: stri
 let postStatus: number;
 let calls: string[];
 let gate: Promise<void> | null;
+let gates: Record<string, Promise<void>>;
 
 function stubServer() {
   vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
@@ -27,6 +28,8 @@ function stubServer() {
     if (url.startsWith("/api/players")) return json(PLAYERS);
     if (url === "/api/drafts/d1/picks" && method === "POST") {
       if (gate) await gate;
+      const gated = gates[JSON.parse(String(init?.body)).playerId];
+      if (gated) await gated;
       if (postStatus === 201) {
         const body = JSON.parse(String(init?.body));
         serverPicks.push({ overall: serverPicks.length + 1, team: 1, playerId: body.playerId, source: "manual" });
@@ -46,7 +49,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{children}</QueryClientProvider>
 );
 
-beforeEach(() => { serverPicks = []; postStatus = 201; calls = []; gate = null; stubServer(); });
+beforeEach(() => { serverPicks = []; postStatus = 201; calls = []; gate = null; gates = {}; stubServer(); });
 afterEach(() => vi.unstubAllGlobals());
 
 async function ready() {
@@ -71,6 +74,19 @@ test("a logged pick leaves the pool and recommendations recompute without refetc
   await act(async () => { await pending; });
 
   expect(calls.filter((c) => c.includes("/api/players")).length).toBe(playerFetches);
+});
+
+test("a second quick pick stays applied while the first one's refetch lands", async () => {
+  const { result } = await ready();
+  let release!: () => void;
+  gates.p2 = new Promise<void>((r) => (release = r));
+  let first!: Promise<void>, second!: Promise<void>;
+  act(() => { first = result.current.logPick("p1"); second = result.current.logPick("p2"); });
+  await act(async () => { await first; }); // p1 is saved and its refetch has run; the server has not saved p2 yet
+  expect(result.current.state.picks.map((p) => p.playerId)).toEqual(["p1", "p2"]);
+  release();
+  await act(async () => { await second; });
+  await waitFor(() => expect(result.current.state.picks.map((p) => p.playerId)).toEqual(["p1", "p2"]));
 });
 
 test("a 409 rolls the optimistic pick back and reports an error", async () => {

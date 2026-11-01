@@ -104,6 +104,25 @@ describe("picks", () => {
     expect((await logPick(req("POST", { playerId: ids[2] }), ctx(id))).status).toBe(409);
   });
 
+  test("racing new picks against undos never leaves a gap in the pick numbers", async () => {
+    const id = await newDraft();
+    const ids = await seedPlayers(60);
+    let next = 0;
+    for (const pid of ids.slice(0, 5)) { await logPick(req("POST", { playerId: pid }), ctx(id)); next++; }
+    for (let round = 0; round < 8; round++) {
+      const results = await Promise.all([
+        logPick(req("POST", { playerId: ids[next++] }), ctx(id)),
+        undoPick(req("DELETE"), ctx(id)),
+        undoPick(req("DELETE"), ctx(id)),
+      ]);
+      const bad = results.filter((r) => ![200, 201, 404, 409].includes(r.status));
+      expect(bad.map((r) => r.status), JSON.stringify(await Promise.all(bad.map((r) => r.text())))).toEqual([]); // never a 500
+      const overalls = (await testDb.draftPick.findMany({ orderBy: { overall: "asc" } })).map((p) => p.overall);
+      expect(overalls).toEqual(overalls.map((_, i) => i + 1));
+      for (const pid of ids.slice(next, next + 3)) { await logPick(req("POST", { playerId: pid }), ctx(id)); next++; }
+    }
+  });
+
   test("undo removes the latest pick, and is 404 on an empty draft", async () => {
     const id = await newDraft();
     expect((await undoPick(req("DELETE"), ctx(id))).status).toBe(404);
@@ -129,6 +148,20 @@ describe("GET /api/players", () => {
     const list = await res.json();
     expect(list).toHaveLength(3);
     expect(list.find((p: { id: string }) => p.id === a).adp).toBe(1.5);
+  });
+
+  test("players with no ADP are still in the pool, after the ranked ones, so any pick can be logged", async () => {
+    const [a, b, c] = await seedPlayers(3);
+    await testDb.playerRanking.create({ data: { playerId: b, source: "ffc", season: 2025, format: "ppr", teams: 12, adp: 5, fetchedAt: new Date() } });
+    const list = await (await getPlayers(new Request("http://x/api/players?sport=NFL&format=ppr&teams=12"))).json();
+    expect(list.map((p: { id: string }) => p.id)).toEqual([b, a, c]);
+    expect(list[1].adp).toBeNull();
+  });
+
+  test("with no rankings at all the players are still returned", async () => {
+    await seedPlayers(2);
+    const list = await (await getPlayers(new Request("http://x/api/players?sport=NFL&format=ppr&teams=12"))).json();
+    expect(list).toHaveLength(2);
   });
 
   test("an empty database gives an empty list, not an error", async () => {

@@ -98,7 +98,8 @@ export function useDraft(id: string) {
       rollback(e, v, prev);
       setError(e instanceof HttpError && e.status === 409 ? "That pick or player is already recorded." : "Could not save that pick.");
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+    // Refetch only when the last in-flight write finishes, or an earlier refetch would erase a later optimistic pick.
+    onSettled: () => (qc.isMutating() <= 1 ? qc.invalidateQueries({ queryKey: key }) : undefined),
   });
 
   const undoMutation = useMutation({
@@ -112,7 +113,8 @@ export function useDraft(id: string) {
       rollback(e, v, prev);
       setError("Could not undo that pick.");
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: key }),
+    // Refetch only when the last in-flight write finishes, or an earlier refetch would erase a later optimistic pick.
+    onSettled: () => (qc.isMutating() <= 1 ? qc.invalidateQueries({ queryKey: key }) : undefined),
   });
 
   const current = state.picks.length + 1;
