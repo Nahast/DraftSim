@@ -30,6 +30,15 @@ describe("recommend", () => {
     expect(out[0].reason).toContain("RB");
   });
 
+  test("with only ADP data, a top-ranked running back beats a tight end drafted much later", () => {
+    const rb = pl("RB", 2);
+    const wr = pl("WR", 3);
+    const te = pl("TE", 40);
+    const rest = Array.from({ length: 30 }, (_, i) => pl("TE", 100 + i));
+    const out = recommend(draft([te, rb, wr, ...rest]), rules({ myPosition: 6 }), 3);
+    expect(out.slice(0, 2).map((r) => r.player.id)).toEqual([rb.id, wr.id]);
+  });
+
   test("never recommends a second kicker", () => {
     const k1 = pl("K", 120);
     const pool = [pl("K", 1), pl("RB", 30), pl("WR", 31), pl("QB", 32), pl("TE", 33)];

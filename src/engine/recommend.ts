@@ -68,7 +68,9 @@ export function recommend(state: DraftState, rules: Rules, limit = 3): Recommend
     const remaining = byPos.get(pos)!.length;
     const scarcity = SCARCITY_WEIGHT * Math.max(0, 1 - remaining / Math.max(1, rules.teams * directCount(pos)));
     const survival = survivalChance(p, until, current);
-    const score = valueOf(p) - replacement(pos) + need + scarcity + SURVIVAL_WEIGHT * (1 - survival);
+    // ADP already prices position scarcity, so only projections (points) are measured against replacement level.
+    const base = p.projection === null ? valueOf(p) : valueOf(p) - replacement(pos);
+    const score = base + need + scarcity + SURVIVAL_WEIGHT * (1 - survival);
 
     const haveAtPos = mine.filter((m) => m.positions[0] === pos).length;
     const reason =
