@@ -5,7 +5,7 @@ import { DataStatus } from "./DataStatus";
 
 afterEach(cleanup);
 const NOW = new Date("2026-11-04T12:00:00Z");
-const ffc = (lastOk: string | null, lastError: string | null = null) => ({ source: "ffc", lastOk, lastError });
+const ffc = (lastOk: string | null, failed = false) => ({ source: "ffc", lastOk, failed });
 
 test("fresh data shows only the source line with its age", () => {
   render(<DataStatus now={NOW} sources={[ffc("2026-11-04T09:00:00Z")]} />);
@@ -20,7 +20,7 @@ test("data older than 48 hours shows the stale banner", () => {
 });
 
 test("a failed update shows a banner even when the data is recent", () => {
-  render(<DataStatus now={NOW} sources={[ffc("2026-11-04T09:00:00Z", "FFC HTTP 500")]} />);
+  render(<DataStatus now={NOW} sources={[ffc("2026-11-04T09:00:00Z", true)]} />);
   expect(screen.getByRole("alert").textContent).toMatch(/update failed/i);
 });
 

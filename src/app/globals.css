@@ -67,3 +67,11 @@ h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-h
 .seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
 dialog.sheet { margin: auto auto 0; width: min(100%, 480px); max-width: 100%; border: 1px solid var(--ink); border-bottom: 0; background: var(--ground); color: var(--ink); padding: 16px; }
 dialog.sheet::backdrop { background: rgba(11, 31, 42, 0.55); }
+
+/* board: each position gets its own pattern as well as its label, so colour is never the only cue */
+.pos-QB { background-image: repeating-linear-gradient(0deg, rgba(11,31,42,.16) 0 2px, transparent 2px 6px); }
+.pos-RB { background-image: repeating-linear-gradient(135deg, rgba(11,31,42,.16) 0 3px, transparent 3px 7px); }
+.pos-WR { background-image: repeating-linear-gradient(90deg, rgba(11,31,42,.16) 0 2px, transparent 2px 6px); }
+.pos-TE { background-image: radial-gradient(rgba(11,31,42,.28) 1.2px, transparent 1.4px); background-size: 7px 7px; }
+.pos-K { background-image: repeating-linear-gradient(45deg, rgba(11,31,42,.16) 0 3px, transparent 3px 7px); }
+.pos-DEF { background-color: rgba(11,31,42,.14); }

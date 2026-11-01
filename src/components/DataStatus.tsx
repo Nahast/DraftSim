@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-export type SourceStatus = { source: string; lastOk: string | null; lastError: string | null };
+export type SourceStatus = { source: string; lastOk: string | null; failed: boolean };
 
 const STALE_AFTER_HOURS = 48;
 
@@ -17,7 +17,7 @@ function age(from: Date, now: Date): { hours: number; label: string } {
 /** Shows where the ADP comes from and how fresh it is; never lets stale or failed data pass silently. */
 export function DataStatus({ sources, now = new Date() }: { sources: SourceStatus[]; now?: Date }) {
   const ffc = sources.find((s) => s.source === "ffc");
-  const failed = sources.some((s) => s.lastError);
+  const failed = sources.some((s) => s.failed);
   const updated = ffc?.lastOk ? age(new Date(ffc.lastOk), now) : null;
   const stale = updated !== null && updated.hours >= STALE_AFTER_HOURS;
 
