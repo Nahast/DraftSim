@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Sport {
+  NFL
+  NBA
+  EPL
+  MLS
+}
+enum DraftMode {
+  LIVE
+  MOCK
+}
+enum Experience {
+  BEGINNER
+  PRO
+}
+
+model Player {
+  id          String          @id @default(cuid())
+  sport       Sport
+  name        String
+  team        String?
+  positions   String[]
+  status      String?
+  externalIds Json
+  rankings    PlayerRanking[]
+  picks       DraftPick[]
+
+  @@index([sport])
+}
+
+model PlayerRanking {
+  id         String   @id @default(cuid())
+  playerId   String
+  player     Player   @relation(fields: [playerId], references: [id])
+  source     String
+  season     Int
+  format     String
+  teams      Int?
+  adp        Float?
+  rank       Int?
+  projection Float?
+  fetchedAt  DateTime
+
+  @@unique([playerId, source, season, format, teams])
+}
+
+model Draft {
+  id             String      @id @default(cuid())
+  sport          Sport
+  mode           DraftMode
+  experience     Experience
+  app            String
+  teams          Int
+  rounds         Int
+  myPosition     Int
+  snake          Boolean     @default(true)
+  scoring        String
+  rosterSlots    Json
+  sleeperDraftId String?
+  createdAt      DateTime    @default(now())
+  picks          DraftPick[]
+}
+
+model DraftPick {
+  id       String @id @default(cuid())
+  draftId  String
+  draft    Draft  @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  overall  Int
+  team     Int
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id])
+  source   String
+
+  @@unique([draftId, overall])
+  @@unique([draftId, playerId])
+}
+
+model SourceSync {
+  source    String    @id
+  lastOk    DateTime?
+  lastError String?
+}
