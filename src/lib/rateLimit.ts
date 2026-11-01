@@ -1,5 +1,6 @@
 const MAX_KEYS = 10_000;
 const FULL_SWEEP_EVERY_MS = 1_000;
+const OVERFLOW_BUCKETS = 64;
 let lastSweep = 0;
 const hits = new Map<string, { count: number; resetAt: number }>();
 
@@ -12,6 +13,13 @@ export function clientIp(req: Request): string {
   if (real) return real;
   const forwarded = req.headers.get("x-forwarded-for")?.split(",").map((s) => s.trim()).filter(Boolean);
   return forwarded?.at(-1) ?? "local";
+}
+
+// FNV-1a: spreads clients across overflow buckets so one flooder only hurts its own slice.
+function hash(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193);
+  return h >>> 0;
 }
 
 export const trackedKeys = () => hits.size;
@@ -30,9 +38,9 @@ export function rateLimit(ip: string, bucket: string, max: number, windowMs = 60
   let key = `${bucket}:${ip}`;
   if (!hits.has(key) && hits.size >= MAX_KEYS) {
     // Full: drop expired entries at most once a second. Live counters are never evicted, so a flood
-    // cannot reset anyone's limit; if still full, new keys share one bucket and are limited together.
+    // cannot reset anyone's limit; if still full, new keys share 64 hashed overflow buckets.
     if (now - lastSweep >= FULL_SWEEP_EVERY_MS) sweep(now);
-    if (hits.size >= MAX_KEYS) key = `overflow:${bucket}`;
+    if (hits.size >= MAX_KEYS) key = `overflow:${bucket}:${hash(ip) % OVERFLOW_BUCKETS}`;
   }
   const hit = hits.get(key);
   if (!hit || hit.resetAt <= now) {

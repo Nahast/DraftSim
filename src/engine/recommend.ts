@@ -1,4 +1,5 @@
 import { nextPickFor, teamOnClock } from "./order";
+import { openSlots } from "./roster";
 import { slotAccepts } from "./sports";
 import { survivalChance } from "./survival";
 import {
@@ -21,17 +22,6 @@ const POSITION_NAME: Record<Position, string> = {
 // ponytail: per-player value, mixes projection and ADP-derived value if a pool has both; split by source if that happens.
 const valueOf = (p: PlayerView): number =>
   p.projection ?? (p.adp === null ? 0 : RANK_VALUE_BASE - p.adp);
-
-/** Remaining capacity per slot after greedily seating my picks (own position, then FLEX, then BENCH). */
-function openSlots(mine: PlayerView[], rules: Rules): Map<string, number> {
-  const open = new Map(rules.rosterSlots.map((s) => [s.slot, s.count]));
-  for (const p of mine) {
-    const pos = p.positions[0];
-    const seat = [pos, "FLEX", "BENCH"].find((s) => (open.get(s) ?? 0) > 0 && slotAccepts(s, pos));
-    if (seat) open.set(seat, open.get(seat)! - 1);
-  }
-  return open;
-}
 
 export function recommend(state: DraftState, rules: Rules, limit = 3): Recommendation[] {
   const taken = new Set(state.picks.map((p) => p.playerId));
