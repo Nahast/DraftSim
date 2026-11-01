@@ -20,6 +20,11 @@ describe("ffcRankings", () => {
     expect(url).toContain("year=2026");
   });
 
+  test("labels rows with the league size FFC reports, not the one requested", async () => {
+    const out = await ffcRankings(respond(fixture)).fetchRankings({ season: 2025, teams: 10, format: "ppr" });
+    expect(out.every((r) => r.teams === 12)).toBe(true);
+  });
+
   test("normalises PK to K and drops rows without an ADP", async () => {
     const body = { status: "Success", players: [
       { name: "Kicker One", position: "PK", team: "AAA", adp: 150 },

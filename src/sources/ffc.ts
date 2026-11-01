@@ -9,7 +9,11 @@ const Row = z.object({
   team: z.string().nullish(),
   adp: z.number(),
 });
-const Body = z.object({ status: z.literal("Success"), players: z.array(z.unknown()) });
+const Body = z.object({
+  status: z.literal("Success"),
+  meta: z.object({ teams: z.number().int().positive() }).optional(),
+  players: z.array(z.unknown()),
+});
 
 export function ffcRankings(fetchFn: FetchFn = fetch): RankingSource {
   return {
@@ -24,7 +28,8 @@ export function ffcRankings(fetchFn: FetchFn = fetch): RankingSource {
         const row = Row.safeParse(raw);
         if (!row.success) continue;
         const { name, team, adp, position } = row.data;
-        out.push({ name, team: team ?? null, position: position === "PK" ? "K" : position, adp, teams, format, season });
+        // FFC serves 12-team ADP whatever size is requested, so trust the response.
+        out.push({ name, team: team ?? null, position: position === "PK" ? "K" : position, adp, teams: body.meta?.teams ?? teams, format, season });
       }
       return out;
     },
