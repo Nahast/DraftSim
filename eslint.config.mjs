@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Throwaway design reference and review captures, not product code.
+    "design/**",
+    ".impeccable/**",
   ]),
 ]);
 
