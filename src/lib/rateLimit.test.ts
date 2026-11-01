@@ -44,6 +44,8 @@ describe("rateLimit", () => {
   });
 
   test("when full, new keys share a small set of overflow buckets: limited, but not all together", () => {
+    vi.advanceTimersByTime(120_000); // earlier tests left live keys behind; let them expire
+    rateLimit("sweep-trigger", "h", 99);
     for (let i = 0; i < 10_000; i++) rateLimit(`flood3-${i}`, "h", 1);
     const allowed = Array.from({ length: 300 }, (_, i) => rateLimit(`late-${i}`, "h", 1)).filter(Boolean).length;
     expect(allowed).toBeGreaterThan(1); // one flooder cannot use up everyone's allowance
