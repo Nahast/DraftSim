@@ -33,8 +33,19 @@ describe("rateLimit", () => {
     expect(trackedKeys()).toBeLessThan(10);
   });
 
-  test("a flood of distinct live keys stays under the cap", () => {
+  test("a flood of distinct live keys stays near the cap", () => {
     for (let i = 0; i < 12_000; i++) rateLimit(`flood-${i}`, "f", 1);
-    expect(trackedKeys()).toBeLessThanOrEqual(10_000);
+    expect(trackedKeys()).toBeLessThanOrEqual(10_001);
+  });
+
+  test("a flood never evicts a live counter: an already-limited client stays limited", () => {
+    for (let i = 0; i < 12_000; i++) rateLimit(`flood2-${i}`, "g", 1);
+    expect(rateLimit("flood2-0", "g", 1)).toBe(false);
+  });
+
+  test("new keys arriving when the map is full share one bucket and are limited together", () => {
+    for (let i = 0; i < 12_000; i++) rateLimit(`flood3-${i}`, "h", 1);
+    expect(rateLimit("late-a", "h", 1)).toBe(false);
+    expect(rateLimit("late-b", "h", 1)).toBe(false);
   });
 });

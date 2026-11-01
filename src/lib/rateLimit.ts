@@ -1,4 +1,5 @@
 const MAX_KEYS = 10_000;
+const FULL_SWEEP_EVERY_MS = 1_000;
 let lastSweep = 0;
 const hits = new Map<string, { count: number; resetAt: number }>();
 
@@ -18,19 +19,21 @@ export const trackedKeys = () => hits.size;
 function sweep(now: number) {
   lastSweep = now;
   for (const [key, hit] of hits) if (hit.resetAt <= now) hits.delete(key);
-  // Still over the cap after dropping expired entries: evict oldest first (Map keeps insertion order).
-  for (const key of hits.keys()) {
-    if (hits.size < MAX_KEYS) break;
-    hits.delete(key);
-  }
 }
 
 /** True when the request is allowed. */
 // ponytail: per-instance map, swap for Upstash/Vercel KV if abuse appears or limits must hold across instances.
 export function rateLimit(ip: string, bucket: string, max: number, windowMs = 60_000): boolean {
-  const key = `${bucket}:${ip}`;
   const now = Date.now();
-  if (hits.size >= MAX_KEYS || now - lastSweep >= windowMs || now < lastSweep) sweep(now);
+  if (now - lastSweep >= windowMs || now < lastSweep) sweep(now);
+
+  let key = `${bucket}:${ip}`;
+  if (!hits.has(key) && hits.size >= MAX_KEYS) {
+    // Full: drop expired entries at most once a second. Live counters are never evicted, so a flood
+    // cannot reset anyone's limit; if still full, new keys share one bucket and are limited together.
+    if (now - lastSweep >= FULL_SWEEP_EVERY_MS) sweep(now);
+    if (hits.size >= MAX_KEYS) key = `overflow:${bucket}`;
+  }
   const hit = hits.get(key);
   if (!hit || hit.resetAt <= now) {
     hits.set(key, { count: 1, resetAt: now + windowMs });
