@@ -54,7 +54,7 @@ export function PlayerSheet({ player, rec, teams, myPosition, onClock, mock = fa
           )}
           <div className="mt-4 flex gap-3">
             <button type="button" className="btn btn-alt" onClick={onClose}>Close</button>
-            <button type="button" className="btn" onClick={() => { onLog(player.id, mock ? myPosition : team); onClose(); }}>
+            <button type="button" className="btn" disabled={mock && onClock !== myPosition} onClick={() => { onLog(player.id, mock ? myPosition : team); onClose(); }}>
               {mine ? "I took him" : `Team ${team} took him`}
             </button>
           </div>

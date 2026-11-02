@@ -20,6 +20,11 @@ test("in a practice draft there is no 'Taken by' choice and the button says 'I t
   expect(props.onLog).toHaveBeenCalledWith("p1", 3);
 });
 
+test("in a practice draft the button is disabled while a bot is on the clock", () => {
+  render(<PlayerSheet {...props} mock onClock={5} />);
+  expect((screen.getByText("I took him") as HTMLButtonElement).disabled).toBe(true);
+});
+
 test("in a real draft the 'Taken by' choice stays", () => {
   render(<PlayerSheet {...props} onClock={5} />);
   expect(screen.getByLabelText("Taken by")).toBeTruthy();

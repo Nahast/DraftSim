@@ -129,6 +129,13 @@ describe("mock drafts", () => {
     expect(await picksOf(id)).toEqual([]);
   });
 
+  test("naming my own slot does not let me pick out of turn", async () => {
+    const ids = await seed(40);
+    const id = await newDraft(); // slot 3, team 1 is on the clock
+    expect((await pick(id, ids[0], 3)).status).toBe(409);
+    expect(await picksOf(id)).toEqual([]);
+  });
+
   test("undo rewinds to my latest pick: it and every bot pick after it are removed", async () => {
     const ids = await seed(40);
     const id = await newDraft(); // slot 3

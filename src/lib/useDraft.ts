@@ -139,7 +139,8 @@ export function useDraft(id: string) {
   // advance a draft that does not have my pick yet.
   const advanceMutation = useMutation({
     mutationFn: () => request<{ added: number; complete: boolean }>(`/api/drafts/${id}/advance`, json("POST")),
-    onError: () => setError("The bots could not pick. Reload to try again."),
+    // 409 means another tab or call already made the picks; the refetch in onSettled shows them.
+    onError: (e) => { if (!(e instanceof HttpError && e.status === 409)) setError("The bots could not pick. Reload to try again."); },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
   const writing = useIsMutating({ mutationKey: ["write"] });

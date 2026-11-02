@@ -27,7 +27,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         const overall = (await tx.draftPick.count({ where: { draftId: id } })) + 1;
         if (overall > draft.teams * draft.rounds) return null;
         const team = body.data.team ?? teamOnClock(overall, draft.teams, draft.snake);
-        if (mock && team !== draft.myPosition) return "not-your-turn" as const;
+        if (mock && teamOnClock(overall, draft.teams, draft.snake) !== draft.myPosition) return "not-your-turn" as const;
         return tx.draftPick.create({ data: { draftId: id, overall, team, playerId: player.id, source: "manual" }, select });
       },
       { isolationLevel: "Serializable" },
