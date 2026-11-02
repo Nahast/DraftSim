@@ -13,3 +13,8 @@ export const LIKELY_GONE_BELOW = 0.5;
 export const BOT_NOISE_BASE = 2;
 export const BOT_NOISE_SLOPE = 0.12;
 export const BOT_LATE_ROUNDS = 2; // K and DEF only in this many final rounds
+
+// Draft grade: cut-offs on a 0..1 score for A, B and C (below the last is D), and how many picks after
+// his ADP a player must go to count as a steal.
+export const GRADE_CUTS = [0.85, 0.7, 0.55] as const;
+export const STEAL_MARGIN = 6;

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DataStatusLoader } from "@/components/DataStatus";
 import { useDraft } from "@/lib/useDraft";
@@ -38,6 +39,7 @@ export function DraftRoom({ id }: { id: string }) {
         picksUntilMine={d.picksUntilMine} complete={d.complete} practice={d.mode === "MOCK"} advancing={d.advancing} canUndo={d.state.picks.length > 0}
         mode={level} onMode={setMode} onUndo={d.undo}
       />
+      {d.complete && <Link href={`/draft/${id}/results`} className="btn mx-4 mt-3">See my team</Link>}
       {d.error && <p role="alert" className="mx-4 mt-2 text-danger">{d.error}</p>}
       <div className="lg:grid lg:grid-cols-[26rem_1fr] lg:gap-6">
         <div>
