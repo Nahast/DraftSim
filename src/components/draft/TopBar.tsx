@@ -43,6 +43,7 @@ export function TopBar({ draftId, round, rounds, pick, onMyClock, picksUntilMine
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <button type="button" className="tbtn" onClick={onUndo} disabled={!canUndo}>{practice ? "Undo my last pick" : "Undo last pick"}</button>
         <Link href={`/draft/${draftId}/board`} className="tbtn no-underline">Board</Link>
+        <Link href={`/draft/${draftId}/cheatsheet`} className="tbtn no-underline">Cheat sheet</Link>
         <div className="seg ml-auto" role="group" aria-label="Detail level">
           <button type="button" aria-pressed={mode === "beginner"} onClick={() => onMode("beginner")}>Beginner</button>
           <button type="button" aria-pressed={mode === "pro"} onClick={() => onMode("pro")}>Pro</button>
