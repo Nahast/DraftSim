@@ -15,7 +15,7 @@ export type Recommendation = {
   survival: number;
 };
 
-const POSITION_NAME: Record<Position, string> = {
+export const POSITION_NAME: Record<Position, string> = {
   QB: "quarterback", RB: "running back", WR: "wide receiver", TE: "tight end", K: "kicker", DEF: "defense",
 };
 

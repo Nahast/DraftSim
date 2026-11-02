@@ -18,3 +18,9 @@ export const BOT_LATE_ROUNDS = 2; // K and DEF only in this many final rounds
 // his ADP a player must go to count as a steal.
 export const GRADE_CUTS = [0.85, 0.7, 0.55] as const;
 export const STEAL_MARGIN = 6;
+
+// Cheat sheet: a new tier starts when ADP jumps by more than BASE + previous ADP * SLOPE; the plan lists
+// this many alternates per pick.
+export const TIER_GAP_BASE = 4;
+export const TIER_GAP_SLOPE = 0.06;
+export const PLAN_ALTERNATES = 2;
