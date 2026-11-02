@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const body = CreateDraft.safeParse(await req.json().catch(() => null));
   if (!body.success) return Response.json({ error: body.error.flatten() }, { status: 400 });
   const draft = await db.draft.create({
-    data: { ...body.data, mode: "LIVE", rosterSlots: NFL_DEFAULT_SLOTS },
+    data: { ...body.data, rosterSlots: NFL_DEFAULT_SLOTS },
   });
   return Response.json({ id: draft.id }, { status: 201 });
 }

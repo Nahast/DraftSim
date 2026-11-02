@@ -8,6 +8,7 @@ export const CreateDraft = z
     teams: z.number().int().min(2).max(20),
     myPosition: z.number().int().min(1),
     scoring: z.enum(["std", "half", "ppr"]),
+    mode: z.enum(["LIVE", "MOCK"]).default("LIVE"),
     snake: z.boolean().default(true),
     rounds: z.number().int().min(1).max(30).default(15),
   })
