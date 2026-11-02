@@ -10,11 +10,12 @@ type Props = {
   teams: number;
   myPosition: number;
   onClock: number;
+  mock?: boolean;
   onLog: (playerId: string, team: number) => void;
   onClose: () => void;
 };
 
-export function PlayerSheet({ player, rec, teams, myPosition, onClock, onLog, onClose }: Props) {
+export function PlayerSheet({ player, rec, teams, myPosition, onClock, mock = false, onLog, onClose }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const [team, setTeam] = useState(onClock);
   useEffect(() => {
@@ -25,7 +26,7 @@ export function PlayerSheet({ player, rec, teams, myPosition, onClock, onLog, on
     setTeam(onClock);
   }, [player, onClock]);
 
-  const mine = team === myPosition;
+  const mine = mock || team === myPosition;
   return (
     <dialog ref={ref} className="sheet" onClose={onClose} aria-label={player ? `${player.name} details` : "Player details"}>
       {player && (
@@ -41,15 +42,19 @@ export function PlayerSheet({ player, rec, teams, myPosition, onClock, onLog, on
             <dd>Fantasy Football Calculator</dd>
           </dl>
           {rec && <p className="mt-3 font-medium">{rec.reason}</p>}
-          <label className="mt-4 block text-sm font-semibold" htmlFor="taken-by">Taken by</label>
-          <select id="taken-by" value={team} onChange={(e) => setTeam(Number(e.target.value))} className="mt-1 min-h-11 w-full rounded-sm border border-ink bg-white px-2">
-            {Array.from({ length: teams }, (_, i) => i + 1).map((t) => (
-              <option key={t} value={t}>{t === myPosition ? `Team ${t} (you)` : `Team ${t}`}</option>
-            ))}
-          </select>
+          {!mock && (
+            <>
+              <label className="mt-4 block text-sm font-semibold" htmlFor="taken-by">Taken by</label>
+              <select id="taken-by" value={team} onChange={(e) => setTeam(Number(e.target.value))} className="mt-1 min-h-11 w-full rounded-sm border border-ink bg-white px-2">
+                {Array.from({ length: teams }, (_, i) => i + 1).map((t) => (
+                  <option key={t} value={t}>{t === myPosition ? `Team ${t} (you)` : `Team ${t}`}</option>
+                ))}
+              </select>
+            </>
+          )}
           <div className="mt-4 flex gap-3">
             <button type="button" className="btn btn-alt" onClick={onClose}>Close</button>
-            <button type="button" className="btn" onClick={() => { onLog(player.id, team); onClose(); }}>
+            <button type="button" className="btn" onClick={() => { onLog(player.id, mock ? myPosition : team); onClose(); }}>
               {mine ? "I took him" : `Team ${team} took him`}
             </button>
           </div>

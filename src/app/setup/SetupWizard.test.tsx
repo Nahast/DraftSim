@@ -20,8 +20,8 @@ afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 const click = (name: RegExp | string) =>
   fireEvent.click(screen.queryAllByRole("radio", { name })[0] ?? screen.getByRole("button", { name }));
 
-function toStepThree() {
-  render(<SetupWizard />);
+function toStepThree(props: { practiceOnly?: boolean } = {}) {
+  render(<SetupWizard {...props} />);
   click(/never played/i);
   click("Next");
   click(/espn/i);
@@ -50,4 +50,24 @@ test("standard scoring is offered", async () => {
   click("Start my draft");
   await waitFor(() => expect(push).toHaveBeenCalled());
   expect(posted).toMatchObject({ scoring: "std" });
+});
+
+test("step three offers the real draft and a practice draft, and each posts its own mode", async () => {
+  toStepThree();
+  click("Practice first");
+  await waitFor(() => expect(push).toHaveBeenCalledWith("/draft/d1"));
+  expect(posted).toMatchObject({ mode: "MOCK" });
+  push.mockReset();
+  cleanup();
+  toStepThree();
+  click("Start my draft");
+  await waitFor(() => expect(push).toHaveBeenCalled());
+  expect(posted).toMatchObject({ mode: "LIVE" });
+});
+
+test("arriving from the practice link shows only the practice button", async () => {
+  toStepThree({ practiceOnly: true });
+  expect(screen.queryByRole("button", { name: "Start my draft" })).toBeNull();
+  click("Start practice draft");
+  await waitFor(() => expect(posted).toMatchObject({ mode: "MOCK" }));
 });

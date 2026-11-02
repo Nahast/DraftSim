@@ -42,7 +42,7 @@ function Stepper({ label, value, min, max, onChange }: { label: string; value: n
   );
 }
 
-export function SetupWizard() {
+export function SetupWizard({ practiceOnly = false }: { practiceOnly?: boolean }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [exp, setExp] = useState<Experience | null>(null);
@@ -56,7 +56,7 @@ export function SetupWizard() {
 
   const mySlot = Math.min(slot ?? Math.ceil(teams / 2), teams);
 
-  async function start() {
+  async function start(mode: "LIVE" | "MOCK") {
     setBusy(true);
     setError("");
     try {
@@ -71,6 +71,7 @@ export function SetupWizard() {
           myPosition: mySlot,
           scoring,
           snake,
+          mode,
         }),
       });
       if (!res.ok) throw new Error(res.status === 429 ? "Too many drafts just now. Try again in a minute." : "Could not create your draft.");
@@ -151,7 +152,7 @@ export function SetupWizard() {
         </section>
       )}
 
-      <div className="mt-8 flex gap-3">
+      <div className="mt-8 flex flex-wrap gap-3">
         {step === 1 ? (
           <Link href="/" className="btn btn-alt">Back</Link>
         ) : (
@@ -160,7 +161,16 @@ export function SetupWizard() {
         {step < 3 ? (
           <button type="button" className="btn" disabled={step === 1 ? !exp : !app} onClick={() => setStep(step + 1)}>Next</button>
         ) : (
-          <button type="button" className="btn" disabled={busy} onClick={start}>{busy ? "Starting…" : "Start my draft"}</button>
+          <>
+            {practiceOnly ? (
+              <button type="button" className="btn" disabled={busy} onClick={() => start("MOCK")}>{busy ? "Starting…" : "Start practice draft"}</button>
+            ) : (
+              <>
+                <button type="button" className="btn" disabled={busy} onClick={() => start("LIVE")}>{busy ? "Starting…" : "Start my draft"}</button>
+                <button type="button" className="btn btn-alt" disabled={busy} onClick={() => start("MOCK")}>Practice first</button>
+              </>
+            )}
+          </>
         )}
       </div>
     </main>

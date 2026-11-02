@@ -13,6 +13,9 @@ export default function Home() {
       <Link href="/setup" className="btn mt-5">
         Set up my NFL draft
       </Link>
+      <Link href="/setup?mode=mock" className="btn btn-alt mt-3">
+        Practice a mock draft
+      </Link>
       <ResumeLink />
       <ul className="mt-6 grid grid-cols-3 gap-2" aria-label="Other sports">
         {SOON.map((s) => (

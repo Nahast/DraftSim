@@ -13,6 +13,7 @@ let postStatus: number;
 let calls: string[];
 let gate: Promise<void> | null;
 let gates: Record<string, Promise<void>>;
+let mode: "LIVE" | "MOCK";
 
 function stubServer() {
   vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
@@ -21,7 +22,7 @@ function stubServer() {
     const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
     if (url === "/api/drafts/d1" && method === "GET") {
       return json({
-        id: "d1", teams: 12, rounds: 15, myPosition: 3, snake: true, scoring: "ppr", experience: "BEGINNER",
+        id: "d1", mode, teams: 12, rounds: 15, myPosition: 3, snake: true, scoring: "ppr", experience: "BEGINNER",
         rosterSlots: [{ slot: "RB", count: 2 }, { slot: "BENCH", count: 6 }], picks: serverPicks,
       });
     }
@@ -37,6 +38,13 @@ function stubServer() {
       }
       return json({ error: "taken" }, postStatus);
     }
+    if (url === "/api/drafts/d1/advance" && method === "POST") {
+      // The bots take picks until it is my turn (slot 3 of 12, snake: overalls 1-2, 4-21, ...).
+      while (![3, 22].includes(serverPicks.length + 1) && serverPicks.length < 30) {
+        serverPicks.push({ overall: serverPicks.length + 1, team: 1, playerId: `bot${serverPicks.length}`, source: "bot" });
+      }
+      return json({ added: 1, complete: false });
+    }
     if (url === "/api/drafts/d1/picks/last" && method === "DELETE") {
       serverPicks.pop();
       return json({ overall: 1 });
@@ -49,7 +57,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{children}</QueryClientProvider>
 );
 
-beforeEach(() => { serverPicks = []; postStatus = 201; calls = []; gate = null; gates = {}; stubServer(); });
+beforeEach(() => { serverPicks = []; postStatus = 201; calls = []; gate = null; gates = {}; mode = "LIVE"; stubServer(); });
 afterEach(() => vi.unstubAllGlobals());
 
 async function ready() {
@@ -108,4 +116,29 @@ test("undo removes the last pick", async () => {
 test("an unknown draft is reported, not an endless spinner", async () => {
   const hook = renderHook(() => useDraft("nope"), { wrapper });
   await waitFor(() => expect(hook.result.current.notFound).toBe(true));
+});
+
+const count = (needle: string) => calls.filter((c) => c === needle).length;
+
+test("a practice draft with a bot on the clock advances once on load and then refetches", async () => {
+  mode = "MOCK";
+  const { result } = await ready();
+  await waitFor(() => expect(count("POST /api/drafts/d1/advance")).toBe(1));
+  await waitFor(() => expect(result.current.state.picks.length).toBe(2));
+  expect(result.current.mode).toBe("MOCK");
+  expect(count("POST /api/drafts/d1/advance")).toBe(1);
+});
+
+test("in a practice draft my pick is followed by another advance", async () => {
+  mode = "MOCK";
+  const { result } = await ready();
+  await waitFor(() => expect(result.current.state.picks.length).toBe(2));
+  await act(async () => { await result.current.logPick("p1"); });
+  await waitFor(() => expect(count("POST /api/drafts/d1/advance")).toBe(2));
+});
+
+test("a live draft never calls advance", async () => {
+  await ready();
+  await new Promise((r) => setTimeout(r, 50));
+  expect(count("POST /api/drafts/d1/advance")).toBe(0);
 });

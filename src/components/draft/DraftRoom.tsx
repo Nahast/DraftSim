@@ -35,7 +35,7 @@ export function DraftRoom({ id }: { id: string }) {
     <main className="mx-auto max-w-md lg:max-w-6xl">
       <TopBar
         draftId={id} round={Math.ceil(current / draft.teams)} rounds={draft.rounds} pick={current} onMyClock={onMyClock}
-        picksUntilMine={d.picksUntilMine} complete={d.complete} canUndo={d.state.picks.length > 0}
+        picksUntilMine={d.picksUntilMine} complete={d.complete} practice={d.mode === "MOCK"} advancing={d.advancing} canUndo={d.state.picks.length > 0}
         mode={level} onMode={setMode} onUndo={d.undo}
       />
       {d.error && <p role="alert" className="mx-4 mt-2 text-danger">{d.error}</p>}
@@ -53,7 +53,7 @@ export function DraftRoom({ id }: { id: string }) {
       <PlayerSheet
         player={openId ? byId.get(openId) ?? null : null}
         rec={d.recs.find((r) => r.player.id === openId)}
-        teams={draft.teams} myPosition={draft.myPosition} onClock={d.onClock}
+        mock={d.mode === "MOCK"} teams={draft.teams} myPosition={draft.myPosition} onClock={d.onClock}
         onLog={(pid, team) => d.logPick(pid, team)} onClose={() => setOpenId(null)}
       />
     </main>
