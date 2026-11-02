@@ -8,3 +8,8 @@ export const BENCH_PENALTY = 40; // only bench room left
 export const SCARCITY_WEIGHT = 15;
 export const SURVIVAL_WEIGHT = 20;
 export const LIKELY_GONE_BELOW = 0.5;
+
+// Mock-draft bots: noise on ADP grows with ADP (late picks are less predictable).
+export const BOT_NOISE_BASE = 2;
+export const BOT_NOISE_SLOPE = 0.12;
+export const BOT_LATE_ROUNDS = 2; // K and DEF only in this many final rounds
