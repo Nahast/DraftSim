@@ -89,3 +89,17 @@ describe("recommend", () => {
     expect(out[0].survival).toBeLessThan(0.9);
   });
 });
+
+describe("recommend at my final pick", () => {
+  test("nothing comes after it, so survival is 1 and nobody is flagged likely gone", () => {
+    const r = rules({ teams: 2, rounds: 1, myPosition: 2 });
+    const first = pl("QB", 1);
+    const pool = [pl("RB", 2), pl("WR", 3), pl("TE", 4)];
+    const out = recommend({ players: [first, ...pool], picks: [{ overall: 1, team: 1, playerId: first.id }] }, r, 3);
+    expect(out.length).toBeGreaterThan(0);
+    for (const rec of out) {
+      expect(rec.survival).toBe(1);
+      expect(rec.likelyGone).toBe(false);
+    }
+  });
+});

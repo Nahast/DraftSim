@@ -5,6 +5,7 @@ export type Mode = "beginner" | "pro";
 type Props = {
   draftId: string;
   round: number;
+  rounds: number;
   pick: number;
   onMyClock: boolean;
   picksUntilMine: number;
@@ -15,7 +16,7 @@ type Props = {
   onUndo: () => void;
 };
 
-export function TopBar({ draftId, round, pick, onMyClock, picksUntilMine, complete, canUndo, mode, onMode, onUndo }: Props) {
+export function TopBar({ draftId, round, rounds, pick, onMyClock, picksUntilMine, complete, canUndo, mode, onMode, onUndo }: Props) {
   const status = complete
     ? "Draft complete"
     : onMyClock
@@ -31,7 +32,7 @@ export function TopBar({ draftId, round, pick, onMyClock, picksUntilMine, comple
         <span className={onMyClock && !complete ? "bg-teal px-2" : ""}>{status}</span>
       </p>
       <p className="mt-1 text-sm text-muted">
-        {complete ? `${round} rounds` : `Round ${round}, pick ${pick}`} · Picks are entered by hand
+        {complete ? `${rounds} rounds` : `Round ${round}, pick ${pick}`} · Picks are entered by hand
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <button type="button" className="tbtn" onClick={onUndo} disabled={!canUndo}>Undo last pick</button>

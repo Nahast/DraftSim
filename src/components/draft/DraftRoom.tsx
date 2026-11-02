@@ -34,7 +34,7 @@ export function DraftRoom({ id }: { id: string }) {
   return (
     <main className="mx-auto max-w-md lg:max-w-6xl">
       <TopBar
-        draftId={id} round={Math.ceil(current / draft.teams)} pick={current} onMyClock={onMyClock}
+        draftId={id} round={Math.ceil(current / draft.teams)} rounds={draft.rounds} pick={current} onMyClock={onMyClock}
         picksUntilMine={d.picksUntilMine} complete={d.complete} canUndo={d.state.picks.length > 0}
         mode={level} onMode={setMode} onUndo={d.undo}
       />
