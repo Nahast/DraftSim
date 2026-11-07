@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390,initial-scale=1">
+<title>DraftSim Draft Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#EEF4F2;--ink:#0B1F2A;--mut:#4A606B;--teal:#14B8C6;--tote:#0A0F14;--amb:#FFB400;--red:#D6322E;--rule:#B9CAC6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--g);color:var(--ink);font:400 14px/1.35 "Public Sans",sans-serif;display:flex;flex-direction:column}
+.f{font-family:"Barlow Condensed",sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+header{height:52px;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--ink)}
+.logo{width:30px;height:30px;background:var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;font:700 16px "Barlow Condensed";color:#fff}
+.logo b{color:var(--teal)}
+.name{font:700 20px "Barlow Condensed";letter-spacing:.02em;flex:1}
+.chip{font:600 13px "Barlow Condensed";text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--ink);padding:4px 10px;border-radius:2px}
+.gear{width:44px;height:44px;display:grid;place-items:center;margin-right:-10px}
+.status{padding:10px 16px 8px;border-bottom:3px double var(--ink)}
+.clock{font:700 22px/1 "Barlow Condensed";text-transform:uppercase;letter-spacing:.03em}
+.clock i{font-style:normal;background:var(--teal);color:var(--ink);padding:1px 6px;margin-left:4px}
+.sub{font-size:12px;color:var(--mut);margin-top:5px;display:flex;justify-content:space-between}
+.sec{font:600 12px "Barlow Condensed";text-transform:uppercase;letter-spacing:.14em;color:var(--mut);padding:10px 16px 4px;display:flex;justify-content:space-between}
+.pick{margin:0 16px;border-top:2px solid var(--ink);border-left:4px solid var(--teal);padding:10px 0 12px 12px}
+.row{display:flex;gap:12px;align-items:center}
+.row>div:first-child{flex:1}
+.pn{font:700 30px/1 "Barlow Condensed";text-transform:uppercase}
+.meta{font:600 14px "Barlow Condensed";color:var(--mut);letter-spacing:.06em;margin-top:2px}
+.tote{background:var(--tote);color:var(--amb);border-radius:3px;padding:5px 8px 4px;text-align:center;min-width:78px;border:1px solid #000;box-shadow:inset 0 0 0 1px #2a2f36}
+.tote b{display:block;font:700 34px/1 "Barlow Condensed";letter-spacing:.06em;text-shadow:0 0 8px rgba(255,180,0,.5)}
+.tote small{display:block;font:600 10px/1.1 "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;opacity:.85;margin-top:2px}
+.tote.sm{min-width:64px;padding:3px 6px}.tote.sm b{font-size:26px}
+.why{margin:8px 0 10px;font-size:15px;font-weight:500}
+.btn{display:block;width:calc(100% - 12px);height:52px;background:var(--teal);color:var(--ink);border:0;border-radius:4px;font:700 17px "Public Sans"}
+.hint{font-size:12px;color:var(--mut);margin-top:6px}
+.alt{margin:0 16px;border-top:1px solid var(--rule);padding:6px 0 6px 12px;min-height:60px}
+.alt .pn{font-size:21px}.alt p{font-size:12px;margin-top:2px;color:var(--mut)}
+.gone{border-left:4px solid var(--red);padding-left:8px;background:repeating-linear-gradient(135deg,rgba(214,50,46,.10) 0 4px,transparent 4px 8px)}
+.gone p b{color:var(--red)}
+.alt:not(.gone){border-left:4px solid var(--rule);padding-left:8px}
+.ros{display:grid;grid-template-columns:repeat(7,1fr);margin:0 16px;border:1px solid var(--ink)}
+.ros div{height:44px;border-right:1px solid var(--rule);text-align:center;font:600 15px/1 "Barlow Condensed";padding-top:6px}
+.ros div:last-child{border:0}
+.ros span{display:block;font-size:10px;color:var(--mut);margin-top:3px;letter-spacing:.04em}
+.ros .need{border-bottom:4px solid var(--ink);background:repeating-linear-gradient(135deg,rgba(11,31,42,.13) 0 3px,transparent 3px 6px);padding-top:6px}
+.ros .have{background:var(--ink);color:#fff}.ros .have span{color:#cfe}
+.needs{margin:6px 16px 0;font-size:13px}.needs b{font-weight:700}
+.rec{margin:0 16px;font:500 16px/1 "Barlow Condensed";letter-spacing:.03em}
+.rec div{display:flex;gap:10px;align-items:center;height:30px;border-top:1px solid var(--rule)}
+.rec em{font-style:normal;color:var(--mut);width:30px}
+.rec .nm{flex:1;text-transform:uppercase;font-weight:600}
+.rec u{text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--red);border:1px solid var(--red);padding:1px 5px;background:repeating-linear-gradient(135deg,rgba(214,50,46,.15) 0 3px,transparent 3px 6px)}
+.smp{margin:auto 16px 6px;font-size:10px;color:var(--mut);text-align:right}
+nav{height:64px;border-top:1px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);background:var(--g)}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 13px "Barlow Condensed";text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
+nav a.on{color:var(--ink);box-shadow:inset 0 3px 0 var(--teal)}
+svg{display:block}
+</style></head><body>
+<header>
+ <div class="logo">D<b>S</b></div><div class="name">DraftSim</div><span class="chip">Beginner</span>
+ <div class="gear" aria-label="Settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F2A" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div>
+</header>
+<div class="status">
+ <div class="clock">Round 3 · Pick 27 <i>You're on the clock</i></div>
+ <div class="sub"><span>12-team snake · PPR</span><span>Synced · Sleeper · 3s ago</span></div>
+</div>
+
+<div class="sec"><span>Our pick for you</span><span>Still here at my next pick (46)</span></div>
+<div class="pick">
+ <div class="row"><div><div class="pn">Bijan Robinson</div><div class="meta f">RB · ATL</div></div>
+  <div class="tote" aria-label="9 percent still available"><b>09%</b><small>here at #46</small></div></div>
+ <p class="why">Best running back left. You have no RB yet.</p>
+ <button class="btn">Take this player</button>
+ <p class="hint">Then tap 'I took him' in your app.</p>
+</div>
+
+<div class="sec"><span>Also consider</span></div>
+<div class="alt gone"><div class="row"><div><div class="pn">Puka Nacua <span class="meta f">WR · LAR</span></div><p><b>Likely gone</b> by your next pick (22% left)</p></div>
+ <div class="tote sm"><b>22%</b><small>here at #46</small></div></div></div>
+<div class="alt"><div class="row"><div><div class="pn">Amon-Ra St. Brown <span class="meta f">WR · DET</span></div><p>Good value, 61% still here at your next pick</p></div>
+ <div class="tote sm"><b>61%</b><small>here at #46</small></div></div></div>
+
+<div class="sec"><span>My roster</span><span>Hatched = still open</span></div>
+<div class="ros f">
+ <div class="need">QB<span>open</span></div><div class="need">RB<span>open</span></div><div class="need">RB<span>open</span></div>
+ <div class="have">WR<span>Chase R1</span></div><div>WR<span>-</span></div><div class="need">TE<span>open</span></div><div>FLEX<span>-</span></div>
+</div>
+<p class="needs">You still need: <b>QB, RB, TE</b></p>
+
+<div class="sec"><span>Just taken</span></div>
+<div class="rec">
+ <div><em>#26</em><span class="nm">Justin Jefferson</span><span>WR</span><u>GONE</u></div>
+ <div><em>#25</em><span class="nm">CeeDee Lamb</span><span>WR</span><u>GONE</u></div>
+ <div><em>#24</em><span class="nm">Saquon Barkley</span><span>RB</span><u>GONE</u></div>
+</div>
+<p class="smp">Sample data</p>
+<nav>
+ <a class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Draft</a>
+ <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 3v18"/></svg>Board</a>
+ <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg>My Team</a>
+ <a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.4-1 .9-1 1.700M12 17v.1"/></svg>Help</a>
+</nav>
+</body></html>

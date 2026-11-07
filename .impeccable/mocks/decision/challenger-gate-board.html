@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>DraftSim - Gate Board</title>
+<meta name="viewport" content="width=390,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--panel:#101418;--raise:#181E24;--line:#2A323A;--ink:#F2F4F5;--grey:#7A8590;--alert:#FF5A1F;--teal:#14B8C6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--panel);color:var(--ink);font:400 14px/1.3 'Hanken Grotesk',system-ui,sans-serif;display:flex;flex-direction:column}
+.m{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.g{color:var(--grey)}
+header{height:52px;padding:0 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);flex:none}
+.logo{width:32px;height:32px;border-radius:7px;background:var(--raise);border:1px solid var(--line);display:grid;place-items:center;white-space:nowrap;font:700 14px 'JetBrains Mono',monospace}
+.logo b{color:var(--teal)}
+.name{font-weight:700;font-size:17px;flex:1}
+.chip{border:1px solid var(--grey);border-radius:99px;padding:5px 11px;font:500 12px 'JetBrains Mono',monospace;min-height:28px}
+.gear{width:44px;height:44px;display:grid;place-items:center;margin-right:-10px}
+.status{padding:10px 16px 8px;flex:none}
+.status .t{font:700 12px 'JetBrains Mono',monospace;letter-spacing:.04em}
+.status .s{font-size:12px;color:var(--grey);margin-top:2px}
+.pass{margin:0 16px;height:60px;display:flex;border:1px solid var(--ink);border-radius:8px;flex:none;overflow:hidden}
+.pass>div{padding:8px 12px;display:flex;flex-direction:column;justify-content:center}
+.pass .a{flex:1;border-right:2px dashed var(--grey)}
+.pass .a small,.pass .c small{font:500 10px 'JetBrains Mono',monospace;color:var(--grey);letter-spacing:.1em}
+.pass .a strong{white-space:nowrap;font:700 15px 'JetBrains Mono',monospace;letter-spacing:.02em}
+.pass .b{width:84px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px,var(--ink) 8px 11px,transparent 11px 13px);margin:8px 10px;padding:0;border-radius:2px}
+.pass .c{width:76px;background:var(--ink);color:var(--panel);align-items:center;text-align:center}
+.pass .c small{color:var(--panel)} .pass .c strong{font:700 12px 'JetBrains Mono',monospace;line-height:1.15}
+.board{margin:12px 16px 0;flex:none}
+.hd,.row{display:grid;grid-template-columns:34px 1fr 38px 70px;column-gap:6px;align-items:center}
+.hd{font:500 10px 'JetBrains Mono',monospace;color:var(--grey);letter-spacing:.1em;padding:0 0 5px;border-bottom:1px solid var(--line)}
+.hd span:last-child,.row .pct{text-align:right}
+.row{min-height:44px;padding:6px 0;border-bottom:1px solid var(--line)}
+.row .rk{font:700 18px 'JetBrains Mono',monospace}
+.row .pl{font-weight:700;font-size:15px}
+.row .pl i{display:block;font:400 12px/1.25 'Hanken Grotesk';font-style:normal;color:var(--grey);margin-top:1px}
+.row .ps{font:500 12px 'JetBrains Mono',monospace;border:1px solid var(--grey);border-radius:3px;text-align:center;padding:2px 0}
+.row .pct{font:700 17px 'JetBrains Mono',monospace}
+.row.moved{background:var(--raise);border-left:3px solid var(--alert);margin-left:-3px;padding-left:0}
+.tag{grid-column:1/-1;font:700 11px 'JetBrains Mono',monospace;color:var(--alert);padding:0 0 0 40px;letter-spacing:.06em}
+.top{background:var(--raise);border-left:3px solid var(--alert);margin-left:-3px;padding:0 0 12px}
+.top .row{border:0;padding-bottom:2px}
+.top .tag{padding-top:2px}
+.top .why{padding:6px 0 10px 40px;font-size:14px}
+.btn{margin:0 0 0 40px;height:48px;border-radius:8px;background:var(--teal);color:#06292D;font:700 16px 'Hanken Grotesk';display:grid;place-items:center;width:calc(100% - 40px)}
+.top .sub{padding:6px 0 0 40px;font-size:12px;color:var(--grey)}
+.roster{margin:12px 16px 0;flex:none}
+.roster .l{font:500 10px 'JetBrains Mono',monospace;color:var(--grey);letter-spacing:.1em;margin-bottom:5px}
+.slots{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.slots div{border:1px solid var(--line);border-radius:4px;padding:4px 2px;text-align:center;font:500 10px 'JetBrains Mono',monospace;color:var(--grey);height:42px}
+.slots div b{display:block;font:700 12px 'JetBrains Mono',monospace;color:var(--ink);margin-top:2px}
+.slots .f{border-color:var(--ink)} .slots .f b{font-size:10px}
+.need{font-size:13px;margin-top:6px}
+.recent{margin:8px 16px 0;font:400 11px 'JetBrains Mono',monospace;color:var(--grey);display:flex;justify-content:space-between}
+.recent b{color:var(--ink);font-weight:500}
+.fine{margin:auto 16px 4px;font:400 9px 'JetBrains Mono',monospace;color:var(--grey);text-align:right}
+nav{height:60px;flex:none;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel)}
+nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--grey);min-height:44px}
+nav a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 2px 0 var(--ink)}
+nav svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7}
+</style></head><body>
+<header>
+ <div class="logo">D<b>S</b></div><div class="name">DraftSim</div>
+ <div class="chip">Beginner</div>
+ <div class="gear" aria-label="Settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2F4F5" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></div>
+</header>
+<div class="status">
+ <div class="t">ROUND 3 · PICK 27 · YOU'RE ON THE CLOCK</div>
+ <div class="s">12-team snake · PPR · Synced Sleeper · 3s ago</div>
+</div>
+<div class="pass">
+ <div class="a"><small>YOUR PICK</small><strong>PICK 27 / ROUND 3</strong></div>
+ <div class="b" aria-hidden="true"></div>
+ <div class="c"><small>STATUS</small><strong>ON THE<br>CLOCK</strong></div>
+</div>
+<section class="board">
+ <div class="hd"><span>RANK</span><span>PLAYER</span><span>POS</span><span>STILL HERE</span></div>
+ <div class="top">
+  <div class="row"><span class="rk">01</span><span class="pl">Bijan Robinson<i>ATL</i></span><span class="ps">RB</span><span class="pct">9%</span></div>
+  <div class="tag">▲ MOVED UP 2</div>
+  <div class="why"><b>Best running back left.</b> You have no RB yet.</div>
+  <div class="btn">Take this player</div>
+  <div class="sub">Then tap 'I took him' in your app.</div>
+ </div>
+ <div class="row"><span class="rk">02</span><span class="pl">Puka Nacua<i>LAR · Likely gone by your next pick (22% left)</i></span><span class="ps">WR</span><span class="pct">22%</span></div>
+ <div class="row"><span class="rk">03</span><span class="pl">Amon-Ra St. Brown<i>DET · Good value, 61% still here at your next pick</i></span><span class="ps">WR</span><span class="pct">61%</span></div>
+</section>
+<section class="roster">
+ <div class="l">MY ROSTER</div>
+ <div class="slots"><div>QB<b>-</b></div><div>RB<b>-</b></div><div>RB<b>-</b></div><div class="f">WR<b>Chase R1</b></div><div>WR<b>-</b></div><div>TE<b>-</b></div><div>FLX<b>-</b></div></div>
+ <div class="need"><span class="g">You still need:</span> <b>QB, RB, TE</b></div>
+</section>
+<div class="recent"><span class="g">LAST 3</span><span><b>#24</b> Barkley RB</span><span><b>#25</b> Lamb WR</span><span><b>#26</b> Jefferson WR</span></div>
+<div class="fine">Sample data</div>
+<nav>
+ <a class="on"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/></svg>Draft</a>
+ <a><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>Board</a>
+ <a><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg>My Team</a>
+ <a><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 2-2.5 2-2.5 4M12 17v.5"/></svg>Help</a>
+</nav>
+</body></html>

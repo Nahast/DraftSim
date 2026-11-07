@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>DraftSim signage</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--y:#FFD400;--k:#111;--d:#2A2A2A;--d2:#363636;--w:#F4F4F2;--m:#B9B9B4;--t:#14B8C6}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--d);color:var(--w);font:500 14px/1.25 Figtree,system-ui,sans-serif;display:flex;flex-direction:column}
+.top{height:52px;background:var(--k);display:flex;align-items:center;gap:8px;padding:0 16px;flex:none}
+.logo{width:30px;height:30px;border-radius:6px;background:#222;border:1px solid #444;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-weight:900;font-size:13px;letter-spacing:-.5px}
+.logo b{color:var(--t)}
+.name{font-weight:800;font-size:17px;flex:1}
+.chip{border:1.5px solid var(--m);border-radius:99px;padding:5px 11px;font-size:12px;font-weight:700}
+.gear{width:44px;height:44px;display:grid;place-items:center;margin-right:-10px}
+.status{background:var(--d2);padding:8px 16px;flex:none;border-bottom:1px solid #444}
+.status strong{display:block;font-size:14px;font-weight:800;letter-spacing:.2px}
+.status small{color:var(--m);font-size:12px}
+.band{background:var(--y);color:var(--k);padding:16px 16px 16px;flex:none}
+.row{display:flex;gap:14px;align-items:center}
+.pic{width:64px;height:64px;background:var(--k);border-radius:8px;display:grid;place-items:center;flex:none;color:#fff}
+.pic span{font-weight:900;font-size:20px;line-height:1}.pic svg{display:block;margin:0 auto 2px}
+.band h1{font-size:16px;font-weight:700;line-height:1}
+.band h2{font-size:31px;font-weight:900;line-height:1.02;letter-spacing:-.8px;margin-top:3px}
+.meta{font-size:13px;font-weight:700;margin-top:6px}
+.why{font-size:16px;font-weight:600;margin:12px 0 12px;line-height:1.3}
+.btn{display:flex;align-items:center;justify-content:space-between;background:var(--k);color:var(--y);height:60px;padding:0 0 0 20px;border-radius:8px;font-weight:800;font-size:20px}
+.btn i{width:60px;height:60px;display:grid;place-items:center;border-left:2px solid var(--y)}
+.hint{font-size:13px;font-weight:600;margin-top:8px}
+.list{padding:10px 16px 0;flex:none}
+h3{font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+.alt{display:flex;align-items:center;gap:12px;min-height:50px;border-bottom:1px solid #444;padding:4px 0}
+.pos{width:34px;height:34px;border-radius:6px;background:var(--k);display:grid;place-items:center;font-size:12px;font-weight:800;flex:none}
+.alt div{flex:1}.alt b{font-size:15px;font-weight:700;display:block}.alt small{font-size:12.5px;color:var(--m)}
+.pct{font-weight:800;font-size:18px;text-align:right;line-height:1}.pct small{display:block;font-size:10.5px;font-weight:600;color:var(--m);margin-top:2px}
+.ros{display:flex;gap:4px;margin:4px 0 6px}
+.ros span{flex:1;background:var(--d2);border-radius:6px;text-align:center;padding:5px 0;font-size:11px;color:var(--m);font-weight:700}
+.ros span b{display:block;color:var(--w);font-size:13px;font-weight:700}.ros .on{background:#444}
+.need{font-size:13px;font-weight:700}.need em{font-style:normal;border-bottom:2px solid var(--w)}
+.recent{display:flex;gap:6px;margin-top:4px}
+.recent span{flex:1;background:var(--d2);border-radius:6px;padding:5px 7px;font-size:12px;color:var(--m)}
+.recent b{display:block;color:var(--w);font-size:12.5px}
+.foot{margin-top:auto;font-size:10px;color:var(--m);text-align:center;padding-bottom:4px}
+.tabs{height:64px;background:var(--k);display:flex;flex:none}
+.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:600;color:var(--m);min-height:44px}
+.tabs a.on{color:#fff;box-shadow:inset 0 3px 0 #fff;font-weight:800}
+</style></head><body>
+<header class="top"><div class="logo">D<b>S</b></div><span class="name">DraftSim</span><span class="chip">Beginner</span>
+<span class="gear" aria-label="Settings"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span></header>
+<div class="status"><strong>Round 3 · Pick 27 · YOU'RE ON THE CLOCK</strong><small>12-team snake · PPR · Synced with Sleeper · 3s ago</small></div>
+<section class="band">
+ <div class="row"><div class="pic"><div><svg width="26" height="18" viewBox="0 0 26 18" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="8" cy="4" r="2.4"/><path d="M4 16l4-8 5 3 5-3M13 11l3 5"/></svg><span>RB</span></div></div>
+ <div><h1>Take:</h1><h2>Bijan Robinson</h2><p class="meta">Running back · ATL · 9% still here at my next pick</p></div></div>
+ <p class="why">Best running back left. You have no RB yet.</p>
+ <div class="btn">Take this player<i><svg width="30" height="22" viewBox="0 0 30 22" fill="none" stroke="#FFD400" stroke-width="3.4" stroke-linecap="square"><path d="M2 11h24M17 3l9 8-9 8"/></svg></i></div>
+ <p class="hint">Then tap 'I took him' in your app.</p>
+</section>
+<section class="list"><h3>Other good options</h3>
+ <div class="alt"><span class="pos">WR</span><div><b>Puka Nacua · LAR</b><small>Likely gone by your next pick</small></div><span class="pct">22%<small>still here</small></span></div>
+ <div class="alt"><span class="pos">WR</span><div><b>Amon-Ra St. Brown · DET</b><small>Good value, likely still here</small></div><span class="pct">61%<small>still here</small></span></div>
+</section>
+<section class="list"><h3>My roster</h3>
+ <div class="ros"><span>QB<b>-</b></span><span>RB<b>-</b></span><span>RB<b>-</b></span><span class="on">WR<b>Chase</b></span><span>WR<b>-</b></span><span>TE<b>-</b></span><span>FLX<b>-</b></span></div>
+ <p class="need">You still need: <em>QB</em>, <em>RB</em>, <em>TE</em></p></section>
+<section class="list"><h3>Recent picks</h3>
+ <div class="recent"><span>#24<b>S. Barkley RB</b></span><span>#25<b>C. Lamb WR</b></span><span>#26<b>J. Jefferson WR</b></span></div></section>
+<p class="foot">Sample data</p>
+<nav class="tabs"><a class="on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Draft</a>
+<a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 3h18v18H3zM3 9h18M9 3v18"/></svg>Board</a>
+<a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 4-7 8-7s8 2 8 7"/></svg>My Team</a>
+<a><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 2-2.5 2-2.5 4M12 17v.5"/></svg>Help</a></nav>
+</body></html>
